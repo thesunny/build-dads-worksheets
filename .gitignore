@@ -5,6 +5,5 @@ yarn-error.log
 # next.js environment variables
 .env.development
 .env.production
-addition
-subtraction
+src
 output
