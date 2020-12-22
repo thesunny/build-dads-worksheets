@@ -13,18 +13,18 @@ await Promise.all(
     const pdfDoc = await PDFDocument.create()
 
     const dir = `${rootDir}/${subdir}`
-    const files = await fs.readdir(dir)
+    const files = (await fs.readdir(dir)).sort()
 
     console.log(`Processing ${dir}`)
+    console.log(files)
 
-    await Promise.all(
-      files.map(async (file) => {
-        const donorPdfBytes = await fs.readFile(`${dir}/${file}`)
-        const donorPdfDoc = await PDFDocument.load(donorPdfBytes)
-        const [donorPage] = await pdfDoc.copyPages(donorPdfDoc, [0])
-        pdfDoc.addPage(donorPage)
-      })
-    )
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const donorPdfBytes = await fs.readFile(`${dir}/${file}`)
+      const donorPdfDoc = await PDFDocument.load(donorPdfBytes)
+      const [donorPage] = await pdfDoc.copyPages(donorPdfDoc, [0])
+      pdfDoc.addPage(donorPage)
+    }
 
     const pdfBytes = await pdfDoc.save()
 
