@@ -1,5 +1,15 @@
-import { PDFDocument } from "pdf-lib"
+import { PDFDocument, StandardFonts } from "pdf-lib"
 import fs from "fs-extra"
+
+const phrases = (await fs.readFile("encouragement.txt", "utf-8")).split("\n")
+
+function rand(max) {
+  return Math.floor(Math.random() * max)
+}
+
+function getPhrase() {
+  return phrases[rand(phrases.length)]
+}
 
 const rootDir = "./src"
 
@@ -23,6 +33,14 @@ await Promise.all(
       const donorPdfBytes = await fs.readFile(`${dir}/${file}`)
       const donorPdfDoc = await PDFDocument.load(donorPdfBytes)
       const [donorPage] = await pdfDoc.copyPages(donorPdfDoc, [0])
+      const phrase = getPhrase()
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+      donorPage.drawText(phrase, {
+        x: 50,
+        y: 30,
+        size: 12,
+        font: font,
+      })
       pdfDoc.addPage(donorPage)
     }
 
