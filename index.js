@@ -1,7 +1,9 @@
 import { PDFDocument, StandardFonts } from "pdf-lib"
 import fs from "fs-extra"
 
-const phrases = (await fs.readFile("encouragement.txt", "utf-8")).split("\n")
+const phrases = (await fs.readFile("encouragement-summer.txt", "utf-8")).split(
+  "\n"
+)
 
 function rand(max) {
   return Math.floor(Math.random() * max)
@@ -13,7 +15,8 @@ function getPhrase() {
 
 const rootDir = "./src"
 
-const dirs = await fs.readdir(rootDir)
+// const dirs = await fs.readdir(rootDir)
+const dirs = ["adding-doubles"]
 
 console.log(dirs)
 
@@ -34,12 +37,11 @@ await Promise.all(
       const donorPdfDoc = await PDFDocument.load(donorPdfBytes)
       const [donorPage] = await pdfDoc.copyPages(donorPdfDoc, [0])
       const phrase = getPhrase()
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+      const DOUBLES_POS = { x: 70, y: 60 }
+      // const DADS_POS = { x: 50, y: 30 }
       donorPage.drawText(phrase, {
-        x: 50,
-        y: 30,
         size: 12,
-        font: font,
+        ...DOUBLES_POS,
       })
       pdfDoc.addPage(donorPage)
     }
